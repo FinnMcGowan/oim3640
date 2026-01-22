@@ -1,3 +1,7 @@
+# program from first day of class
+# ChatGPT vers. 5.2
+# Prompt: Create an appp that tracks every application that runs on windows startup, tracks the memory and cpu usage of each application throughout the duration of startup, and allows the user to remove it from the list of startup processes in one click. create the application using Python
+
 import os
 import re
 import csv
