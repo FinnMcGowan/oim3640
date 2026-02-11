@@ -1,3 +1,3 @@
-import quran as quran
+import code.quran as quran
 
 print(quran.isHaram('murder'))

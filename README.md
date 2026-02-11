@@ -12,3 +12,5 @@ This is the course repository for OIM3640.
  - Email: zli@babson.edu
 
 # https://github.com/FinnMcGowan/oim3640
+ - https://github.com/OIM3640
+ -  Python Notebook Ref: https://allendowney.github.io/ThinkPython/chap04.html
