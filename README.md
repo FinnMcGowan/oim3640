@@ -14,3 +14,6 @@ This is the course repository for OIM3640.
 # https://github.com/FinnMcGowan/oim3640
  - https://github.com/OIM3640
  -  Python Notebook Ref: https://allendowney.github.io/ThinkPython/chap04.html
+
+# My Projects
+ - [First Project](./projects/project1)
