@@ -20,7 +20,7 @@ df['aa'] = df['aa'].astype(str)
 # the assignment below works even if ``key`` doesn't yet exist
 # using ``apply`` is vectorised and much faster than iterating
 # over rows; there is no need to use ``for i in range(...)``
-df['key'] = df['aa'].apply(hash)
+df['key'] = df['Word'].apply(hash)
 
 print(df.head())
 
