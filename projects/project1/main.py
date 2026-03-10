@@ -1,8 +1,8 @@
 
 
-import csv
-import os
-import string
+import csv # this imports the csv module, which provides functionality to read from and write to CSV files
+import os # this imports the os module, which provides a way of using operating system dependent functionality, such as file path manipulation
+import string # this imports the string module, which contains a collection of string constants, including punctuation characters
 
 
 def message(x):
@@ -12,13 +12,13 @@ def message(x):
 
     # normalize: lowercase and strip punctuation
     x = x.lower()
-    translator = str.maketrans('', '', string.punctuation)
+    translator = str.maketrans('', '', string.punctuation) # this creates a translation table that maps all punctuation characters to None
     x = x.translate(translator)
 
-    words = x.split()
+    words = x.split() # this splits the normalized string into a list of words based on whitespace
 
     # load mapping from words(1).csv
-    mapping = {}
+    mapping = {} #this is a dictionary that will hold the mappings from the CSV file
     csv_path = os.path.join(os.path.dirname(__file__), 'words(1).csv')
     try:
         with open(csv_path, newline='', encoding='utf-8') as f:
