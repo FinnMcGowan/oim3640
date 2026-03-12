@@ -1,5 +1,4 @@
 ## My Project Proposal
- - 
 **What I'm building:** (one sentence)
  - A python program that uses words.csv to encrypt messages. Potential expansion to enable sending and decrypting encrypted messages between 2 devices. 
 **Why I chose this:** (personal motivation - what problem does this solve for you?)

@@ -4,6 +4,6 @@
 income = input(": ")
 
 # tax bracket reference
-#ef bracket(income):
+#def bracket(income):
 	
 
