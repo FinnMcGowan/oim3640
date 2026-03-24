@@ -9,6 +9,7 @@ print(info['currentPrice'])
 tickers = ['AAPL', 'NVDA', 'MSFT']
 prices = {}
 for t in tickers:
+    prices[t] = yf.Ticker(t).info['currentPrice']
 
 print(prices)
 
