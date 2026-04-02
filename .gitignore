@@ -45,3 +45,7 @@ Thumbs.db
 
 # API Keys
 api_keys.md
+
+# Environments
+.env
+.venv
