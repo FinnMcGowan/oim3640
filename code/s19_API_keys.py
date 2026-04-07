@@ -50,7 +50,8 @@ def post(msg):
     requests.post('https://oim.108122.xyz/message',
                 json={'message': msg},
                 headers={'X-Token': 'finnfinn'})
-
+post("4/7/2026")
+get()
 
 def delete():
     # DELETE MESSAGE
@@ -84,6 +85,7 @@ def openai_example():
 #openai_example()
 
 # use openai key to make a new shell for an ai chatbot from this program(probably with a while loop)
+'''
 try:
     client = create_openai_client()
 
@@ -100,3 +102,5 @@ try:
         print("AI:", response.choices[0].message.content)
 except ValueError as error:
     print(error)
+
+'''
