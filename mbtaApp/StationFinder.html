@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearest MBTA Station Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 680px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+
+        form {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input {
+            padding: 0.55rem;
+            font-size: 1rem;
+        }
+
+        button {
+            width: fit-content;
+            padding: 0.55rem 0.95rem;
+            border: none;
+            background: #0057b8;
+            color: white;
+            cursor: pointer;
+        }
+
+        .error {
+            color: #a51d2d;
+            font-weight: 600;
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f8fbff;
+        }
+
+        .hint {
+            color: #444;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nearest MBTA Station Finder</h1>
+    <p class="hint">Enter where you are to find the closest MBTA station.</p>
+
+    <form action="{{ url_for('nearest_station') }}" method="post">
+        <label for="place">Your location</label>
+        <input id="place" name="place" type="text" value="{{ place }}" placeholder="Example: Boston Common" required>
+
+        <button type="submit">Find Nearest Station</button>
+    </form>
+
+    {% if looked_up_place %}
+        <p class="hint">Location matched: {{ looked_up_place }}</p>
+    {% endif %}
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if result %}
+        <section class="result">
+            <h2>{{ result.name }}</h2>
+            <p><strong>Municipality:</strong> {{ result.municipality }}</p>
+            <p><strong>Address:</strong> {{ result.address }}</p>
+        </section>
+    {% endif %}
+</body>
+</html>
