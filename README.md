@@ -16,5 +16,7 @@ This is the course repository for OIM3640.
  -  Python Notebook Ref: https://allendowney.github.io/ThinkPython/chap04.html
 
 # My Projects
- - [First Project](mini_projects\Mini Project 1\main.py)
- - [Second Project](mini_projects\Mini Project 2\wordPatters.py)
+ - [First Project](OIM 3640\public-repository\projects\Project 1)
+ - [Second Project](OIM 3640\public-repository\projects\Project 2)
+ - [Third Project](OIM 3640\public-repository\projects\Project 3)
+ - [Final Project]
