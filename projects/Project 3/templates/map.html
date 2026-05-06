@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Flight Tracker</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #0f1923;
+            color: #e0e6ed;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 20px;
+            background: #162030;
+            border-bottom: 1px solid #263447;
+            flex-shrink: 0;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        #search-input {
+            padding: 6px 12px;
+            border: 1px solid #2e4057;
+            border-radius: 6px;
+            background: #0f1923;
+            color: #e0e6ed;
+            font-size: 0.9rem;
+            width: 220px;
+            outline: none;
+        }
+
+        #search-input:focus {
+            border-color: #4a9eff;
+        }
+
+        #status {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: #7a9ab5;
+        }
+
+        #map {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>✈ Live Flight Tracker</h1>
+    <input
+        id="search-input"
+        type="text"
+        placeholder="Filter by callsign or country..."
+        oninput="filterFlights()"
+    />
+    <span id="status">Loading...</span>
+</header>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let map;
+    let markersLayer;
+
+    /**
+     * initMap — sets up the Leaflet map with a world view and OpenStreetMap tiles.
+     */
+    function initMap() {
+        map = L.map("map").setView([20, 0], 2);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors",
+            maxZoom: 18,
+        }).addTo(map);
+
+        markersLayer = L.layerGroup().addTo(map);
+    }
+
+    /**
+     * buildPopupHTML — returns an HTML string for a flight marker popup.
+     * @param {Object} flight - flight dict from /api/flights
+     */
+    function buildPopupHTML(flight) {
+        const alt = flight.altitude !== null ? flight.altitude + " m" : "N/A";
+        const spd = flight.velocity !== null ? flight.velocity + " m/s" : "N/A";
+        return `
+            <strong>${flight.callsign}</strong><br/>
+            Country: ${flight.origin_country}<br/>
+            Altitude: ${alt}<br/>
+            Speed: ${spd}
+        `;
+    }
+
+    /**
+     * renderMarkers — clears existing markers and adds new ones from flights array.
+     * @param {Array} flights - array of flight dicts
+     */
+    function renderMarkers(flights) {
+        markersLayer.clearLayers();
+
+        flights.forEach(function (flight) {
+            const marker = L.circleMarker([flight.latitude, flight.longitude], {
+                radius: 4,
+                color: "#4a9eff",
+                fillColor: "#4a9eff",
+                fillOpacity: 0.85,
+                weight: 1,
+            });
+            marker.bindPopup(buildPopupHTML(flight));
+            markersLayer.addLayer(marker);
+        });
+
+        document.getElementById("status").textContent =
+            flights.length + " aircraft shown — " + new Date().toLocaleTimeString();
+    }
+
+    /**
+     * loadFlights — fetches flight data from /api/flights and calls renderMarkers.
+     */
+    function loadFlights() {
+        const query = document.getElementById("search-input").value.trim();
+        const url = "/api/flights" + (query ? "?q=" + encodeURIComponent(query) : "");
+
+        document.getElementById("status").textContent = "Refreshing...";
+
+        fetch(url)
+            .then(function (response) {
+                if (!response.ok) throw new Error("API error: " + response.status);
+                return response.json();
+            })
+            .then(function (flights) {
+                renderMarkers(flights);
+            })
+            .catch(function (err) {
+                document.getElementById("status").textContent = "Error loading data.";
+                console.error(err);
+            });
+    }
+
+    /**
+     * filterFlights — called by the search input to reload flights with the current query.
+     */
+    function filterFlights() {
+        loadFlights();
+    }
+
+    /**
+     * startAutoRefresh — calls loadFlights every 30 seconds automatically.
+     */
+    function startAutoRefresh() {
+        setInterval(loadFlights, 30000);
+    }
+
+    // Bootstrap
+    initMap();
+    loadFlights();
+    startAutoRefresh();
+</script>
+
+</body>
+</html>
