@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nearest MBTA Station Finder</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 680px;
+            max-width: 720px;
             margin: 2rem auto;
             padding: 0 1rem;
             line-height: 1.5;
@@ -36,6 +38,12 @@
             background: #0057b8;
             color: white;
             cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #004494;
         }
 
         .error {
@@ -51,9 +59,35 @@
             background: #f8fbff;
         }
 
+        .result h2 {
+            margin-top: 0;
+        }
+
+        .wheelchair-yes {
+            color: #1a7340;
+            font-weight: 600;
+        }
+
+        .wheelchair-no {
+            color: #a51d2d;
+            font-weight: 600;
+        }
+
+        .wheelchair-unknown {
+            color: #555;
+        }
+
         .hint {
             color: #444;
             font-size: 0.95rem;
+        }
+
+        #map {
+            width: 100%;
+            height: 360px;
+            margin-top: 1.25rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
@@ -64,7 +98,6 @@
     <form action="{{ url_for('nearest_station') }}" method="post">
         <label for="place">Your location</label>
         <input id="place" name="place" type="text" value="{{ place }}" placeholder="Example: Boston Common" required>
-
         <button type="submit">Find Nearest Station</button>
     </form>
 
@@ -81,7 +114,50 @@
             <h2>{{ result.name }}</h2>
             <p><strong>Municipality:</strong> {{ result.municipality }}</p>
             <p><strong>Address:</strong> {{ result.address }}</p>
+            <p>
+                <strong>Wheelchair accessible:</strong>
+                {% if result.wheelchair_boarding == 1 %}
+                    <span class="wheelchair-yes">Yes ♿</span>
+                {% elif result.wheelchair_boarding == 2 %}
+                    <span class="wheelchair-no">No</span>
+                {% else %}
+                    <span class="wheelchair-unknown">No information available</span>
+                {% endif %}
+            </p>
         </section>
+    {% endif %}
+
+    {% if geo and mapbox_token %}
+        <div id="map"></div>
+        <script>
+            mapboxgl.accessToken = {{ mapbox_token | tojson }};
+
+            const userLng = {{ geo.longitude }};
+            const userLat = {{ geo.latitude }};
+
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [userLng, userLat],
+                zoom: 14
+            });
+
+            // Marker for the searched location (blue)
+            new mapboxgl.Marker({ color: '#0057b8' })
+                .setLngLat([userLng, userLat])
+                .setPopup(new mapboxgl.Popup().setHTML('<strong>Your location</strong><br>{{ looked_up_place | e }}'))
+                .addTo(map);
+
+            {% if result and result.latitude and result.longitude %}
+            // Marker for the nearest MBTA stop (red)
+            new mapboxgl.Marker({ color: '#cc0000' })
+                .setLngLat([{{ result.longitude }}, {{ result.latitude }}])
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML('<strong>Nearest stop:</strong><br>{{ result.name | e }}'))
+                .addTo(map);
+            {% endif %}
+
+            map.addControl(new mapboxgl.NavigationControl());
+        </script>
     {% endif %}
 </body>
 </html>
