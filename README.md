@@ -18,5 +18,6 @@ This is the course repository for OIM3640.
 # My Projects
  - [First Project](OIM 3640\public-repository\projects\Project 1)
  - [Second Project](OIM 3640\public-repository\projects\Project 2)
- - [Third Project](OIM 3640\public-repository\projects\mbtaApp)
+ - [MBTA App](OIM 3640\public-repository\projects\mbtaApp)
+ - [Third Project](OIM 3640\public-repository\projects\Project 3)
  - [Final Project]
