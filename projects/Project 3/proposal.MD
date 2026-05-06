@@ -8,7 +8,7 @@
 A Flask web application that displays live flight data on an interactive map. The app will use the OpenSky Network API (free, no key required) to fetch real-time aircraft positions and show them as markers on a map with details like flight number, altitude, speed, and origin country.
 
 ## Why I chose this:
-I find aviation interesting and wanted to build something that shows real-time data in a visual and interactive way. A live flight tracker combines API usage, mapping, and a clean web interface all in one project. It also feels more dynamic than static data because the information updates every time the page refreshes.
+I use flightrader24, and I think it would be fun to see where flight data comes from, and use what I have learned from the course to build a similar tool. 
 
 ## Core features:
 - Connect to the OpenSky Network REST API to fetch live aircraft state vectors
