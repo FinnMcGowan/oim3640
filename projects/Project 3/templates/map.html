@@ -101,15 +101,19 @@
     /**
      * buildPopupHTML — returns an HTML string for a flight marker popup.
      * @param {Object} flight - flight dict from /api/flights
+     * @param {Object|null} meta - optional aircraft metadata {type, registration, operator}
      */
-    function buildPopupHTML(flight) {
+    function buildPopupHTML(flight, meta) {
         const alt = flight.altitude !== null ? flight.altitude + " m" : "N/A";
         const spd = flight.velocity !== null ? flight.velocity + " m/s" : "N/A";
+        const type = meta ? meta.type : "Loading...";
+        const reg  = meta ? meta.registration : "";
         return `
             <strong>${flight.callsign}</strong><br/>
             Country: ${flight.origin_country}<br/>
             Altitude: ${alt}<br/>
-            Speed: ${spd}
+            Speed: ${spd}<br/>
+            Aircraft: ${type}${reg && reg !== "N/A" ? " (" + reg + ")" : ""}
         `;
     }
 
@@ -128,7 +132,21 @@
                 fillOpacity: 0.85,
                 weight: 1,
             });
-            marker.bindPopup(buildPopupHTML(flight));
+            marker.bindPopup(buildPopupHTML(flight, null));
+
+            // Lazily fetch aircraft type the first time this marker is clicked
+            let metaLoaded = false;
+            marker.on("popupopen", function () {
+                if (metaLoaded || !flight.icao24) return;
+                fetch("/api/aircraft/" + flight.icao24)
+                    .then(function (r) { return r.json(); })
+                    .then(function (meta) {
+                        metaLoaded = true;
+                        marker.setPopupContent(buildPopupHTML(flight, meta));
+                    })
+                    .catch(function () { metaLoaded = true; });
+            });
+
             markersLayer.addLayer(marker);
         });
 

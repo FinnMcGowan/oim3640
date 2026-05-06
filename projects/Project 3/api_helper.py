@@ -64,6 +64,7 @@ def parse_flight_data(raw_data):
         velocity = state[VELOCITY]
 
         flights.append({
+            "icao24": state[ICAO24] or "",
             "callsign": callsign,
             "origin_country": state[ORIGIN_COUNTRY] or "N/A",
             "latitude": lat,
